@@ -13,14 +13,6 @@ function App() {
 
   const changeMode = () => setIsPlayerTurn((prev) => !prev);
 
-  const gameOver = () => {
-    if (playerMatches % 2 === 0) {
-      setResultMessage(`🎉 You win with ${playerMatches} matches!`);
-    } else {
-      setResultMessage(`💻 Computer wins with ${computerMatches} matches!`);
-    }
-  };
-
   const takeMatches = (matchCount) => {
     if (isPlayerTurn && matchCount > 0 && matchCount <= 3) {
       setTotalMatches((prev) => prev - matchCount);
@@ -29,27 +21,28 @@ function App() {
     }
   };
 
-  const computerMove = () => {
-    let matchesTaken = totalMatches % 4 === 0
-      ? Math.floor(Math.random() * 3) + 1
-      : totalMatches % 4;
-
-    setTimeout(() => {
-      setTotalMatches((prev) => prev - matchesTaken);
-      setComputerMatches((prev) => prev + matchesTaken);
-      setIsPlayerTurn(true);
-    }, 1000);
-  };
 
   useEffect(() => {
     if (totalMatches === 0) {
-      gameOver();
+      if (playerMatches % 2 === 0) {
+        setResultMessage(`🎉 You win with ${playerMatches} matches!`);
+      } else {
+        setResultMessage(`💻 Computer wins with ${computerMatches} matches!`);
+      }
     }
-  }, [totalMatches]);
+  }, [computerMatches, playerMatches, totalMatches]);
 
   useEffect(() => {
     if (!isPlayerTurn && totalMatches > 0 && isStart) {
-      computerMove();
+      let matchesTaken = totalMatches % 4 === 0
+      ? Math.floor(Math.random() * 3) + 1
+      : totalMatches % 4;
+
+      setTimeout(() => {
+        setTotalMatches((prev) => prev - matchesTaken);
+        setComputerMatches((prev) => prev + matchesTaken);
+        setIsPlayerTurn(true);
+      }, 1000);
     }
   }, [isPlayerTurn, totalMatches, isStart]);
 
